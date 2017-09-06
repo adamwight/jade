@@ -5,14 +5,14 @@
 create table if not exists wiki_ref (
     wiki_id integer unsigned not null primary key auto_increment,
 
-    -- Wiki database name
-    wiki_dbname varchar(32) not null
+    -- Wiki key, implicit foreign key to sites.site_global_key
+    wiki_global_key varchar(32) not null
 
     -- TODO: How do we get the translated, natural language name?  Or can we
     -- avoid rendering that?
 );
 create unique index wr_dbname
-    on wiki_ref (wiki_dbname);
+    on wiki_ref (wiki_global_key);
 
 -- Reference table defining the types of wiki artifact we support.
 create table if not exists artifact_type (
