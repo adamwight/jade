@@ -1,0 +1,4 @@
+
+
+class TrustedClientVerificationError(RuntimeError):
+    pass
