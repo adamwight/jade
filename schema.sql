@@ -58,29 +58,33 @@ alter table artifact
 create table if not exists judgment (
     judgment_id integer unsigned not null primary key auto_increment,
 
-    -- Foreign key to an artifact.
+    -- Foreign key to an artifact's primary key.
     judgment_artifact_id integer unsigned not null,
 
-    -- Global wiki user ID.
+    -- Global wiki user ID creating this judgment.
     judgment_user_id integer unsigned not null,
 
     judgment_created datetime not null,
+    -- Modified time is only touched when changing rank.
     judgment_modified datetime not null,
 
-    -- Freeform text 
-    judgment_text varbinary(767) not null default '',
+    -- Optional link to freeform text comment, conent may be embedded within a page.
+    judgment_comment varbinary(255) null,
 
     -- A judgment may be promoted or deprecated for various TBD reasons.
     judgment_rank enum ('preferred', 'normal', 'deprecated'),
 
     -- Bitfield of who can access this judgment.  Zero means public.
     -- Value can only be changed with admin privileges.
+    -- TBD: We might not need this, if oversight can be isolated to Flow comments.
     visibility tinyint not null default 0
 );
 create index ju_artifact
     on judgment (judgment_artifact_id);
 create index ju_created
     on judgment (judgment_created);
+create index ju_rank
+    on judgment (rank);
 create index ju_visibility
     on judgment (visibility);
 alter table judgment
@@ -114,13 +118,9 @@ create table if not exists judgment_score (
 
     created datetime not null,
     -- Note: Scores can only be deprecated, not modified.
-
-    rank enum ('preferred', 'normal', 'deprecated')
 );
 create index js_judgment
     on judgment_score (judgment_id);
-create index js_rank
-    on judgment_score (rank);
 create index js_schema
     on judgment_score (schema_id);
 alter table judgment_score
