@@ -2,49 +2,78 @@ import json
 
 import flask
 
-from func_tools import wraps
+from ... import responses, util
+from .... import types
 
-from ... import responses
 
+def configure(bp, config, trusted_clients, centralauth, state, stream):
 
-def configure(bp, trusted_clients, source):
+    @bp.route("/v1/judgements/<string:context>", methods=["get"])
+    def get_context_judgements(context):
+        """Gets all judgements within a context"""
+        judgements_doc = state.judgements.get(context)
+        return flask.json.jsonify(judgements_doc)
 
-    @bp.route("/judgements/")
-    @authorized_user_action(trusted_clients)
-    def post_judgement(gu_id, request_values):
-        """Creates a new judgement and returns event"""
+    @bp.route("/v1/judgements/<string:context>/<string:type>", methods=["get"])
+    def get_entity_type_judgements(context, type_):
+        """Gets all judgements for a specific entity type"""
+        judgements_doc = state.judgements.get(context, type_)
+        return flask.json.jsonify(judgements_doc)
+
+    @bp.route("/v1/judgements/<string:context>/<string:type>/<int:id>", methods=["get"])  # noqa
+    def get_entity_judgements(context, type_, id_):
+        """Gets all judgements for a specific entity"""
+        judgements_doc = state.judgements.get(
+            context, type_, id_)
+        return flask.json.jsonify(judgements_doc)
+
+    @bp.route("/v1/judgements/<string:context>/<string:type>/<int:id>/<string:schema>", methods=["get"])  # noqa
+    def get_entity_schema_judgements(context, type_, id_, schema):
+        """Gets all judgements for a specific entity schema"""
+        judgements_doc = state.judgements.get(
+            context, type_, id_, schema)
+        return flask.json.jsonify(judgements_doc)
+
+    @bp.route("/v1/judgements/<int:judgement_id>/preference", methods=["put"])
+    @util.authorized_user_action(
+        config, trusted_clients, centralauth, "set_judgement_preference")
+    def set_judgement_preference(judgement_id, gu_id, request_values):
+        """
+        Sets the preference bit for a specific judgement and returns the event
+        """
+        preference = json.loads(request_values['preference'])
+        if preference not in (True, False):
+            return responses.malformed_request(
+                "'preference' must be either 'true' or 'false'")
+
+        # Construct a new proto-event for the judgement
+        proto_event = types.events.JudgementPreferenceSet.proto(
+            gu_id=gu_id, judgement_id=judgement_id, preference=preference)
+
+        # Execute the proto_event and construct full event.
+        return util.execute_and_log_or_error(state, proto_event)
+
+    @bp.route("/v1/judgements/", methods=["post"])
+    @util.authorized_user_action(
+        config, trusted_clients, centralauth, "new_judgement")
+    def new_judgement(gu_id, request_values):
+        """Creates a new judgement and returns the event"""
+
         context = request_values['context']
-        schema_id = request_values['schema_id']
-        data = json.loads(flask.request.valeus['data'])
+        entity_type = request_values['entity_type']
+        entity_id = request_values['entity_id']
+        schema = request_values['schema']
+        data = json.loads(request_values['data'])
 
-        # Checks that data represents a valid JSON blob based on latest schema
-        # version
-        source.validate(schema_id, data)
+        # Check that data represents a valid JSON blob based on the latest
+        # schema version
+        state.schemas.validate(schema, data)
 
-        # Constructs a new Judgement, inserts it into a DB and acquires
-        # identifiers unique identifier.  This function call does not complete
-        # unless the event is successfully included in the bin log.
-        event = source.new_judgement(gu_id, context, schema_id, data)
-        return flask.json.jsonify(event)
+        # Construct a new proto-event for the judgement
+        proto_event = types.events.NewJudgement.proto(
+            gu_id=gu_id, context=context,
+            entity=types.Entity(entity_type, entity_id),
+            schema=request_values['schema'], data=data)
 
-
-def authorized_user_action(trusted_clients):
-    """
-    Wrap a flask route. Ensures that the user has authorized via OAuth or that
-    the request came from an authorized MediaWiki installation and provided
-    a `global_user_id`.  If neither, return an authorization error.
-    """
-    def decorator(route):
-        @wraps(route)
-        def authorized_route(*args, **kwargs):
-            if 'authorization_key' in flask.request:
-                values = trusted_clients.authorize_and_decode(flask.request)
-                gu_id = values['gu_id']
-                return route(gu_id, values, *args, **kwargs)
-            elif 'mwoauth_access_token' in flask.session:
-                gu_id = flask.session.get('mwoauth_identity')['id']
-                return route(gu_id, flask.request.values, *args, **kwargs)
-            else:
-                return responses.auth_error()
-
-    return decorator
+        # Execute the proto_event and construct full event.
+        return util.execute_and_log_or_error(state, proto_event)

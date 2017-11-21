@@ -4,7 +4,7 @@ from werkzeug.datastructures import MultiDict
 HASH_ALGORITHM = "HS256"
 
 
-class AuthorizedClients:
+class TrustedClients:
 
     def __init__(self, key_secrets):
         self.key_secrets = dict(key_secrets)
