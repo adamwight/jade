@@ -1,6 +1,9 @@
+import flask
 
-def auth_error():
-    pass
+from .. import errors
 
-def rights_error():
-    pass
+
+def error(e):
+    if not isinstance(e, errors.RequestError):
+        e = error.UnknownError(e)
+    return e.HTTP_CODE, flask.jsonify(e.format_json())

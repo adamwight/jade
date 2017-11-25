@@ -23,23 +23,35 @@ def authorized_user_action(config, trusted_clients, centralauth, rights_group):
                 values = flask.request.values
                 gu_id = flask.session.get('mwoauth_identity')['id']
             else:
-                return responses.auth_error()
+                raise errors.AuthenticationError()
 
+            # Will error if requirements are not met
             requirements = config['actions']['rights'][rights_group]
-            try:
-                centralauth.check_user_rights(gu_id, requirements)
-            except errors.UserRightsError as e:
-                return responses.rights_error(e)
-            else:
-                return route(gu_id, values, *args, **kwargs)
+            if 'context' not in values:
+                raise errors.MissingParameterError('context')
+            context = values.get('context')
+            centralauth.check_user_rights(gu_id, context, requirements)
+
+            # No errors?  Continue routing
+            return route(gu_id, values, *args, **kwargs)
 
     return decorator
 
 
 def execute_and_log_or_error(state, proto_event):
+    # Try to execute and log the event
     try:
         event = state.events.execute_and_log(proto_event)
     except RuntimeError as e:
-        return responses.event_execution_error(e, proto_event)
+        raise errors.EventExecutionError(e, proto_event)
 
     return flask.json.jsonify(event)
+
+
+def json_encapsulated_errors(route):
+    @wraps(route)
+    def _json_error_capsule(*args, **kwargs):
+        try:
+            return route(*args, **kwargs)
+        except Exception as e:
+            return responses.error(e)

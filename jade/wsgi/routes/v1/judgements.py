@@ -2,25 +2,28 @@ import json
 
 import flask
 
-from ... import responses, util
-from .... import types
+from ... import util
+from .... import errors, types
 
 
 def configure(bp, config, trusted_clients, centralauth, state, stream):
 
     @bp.route("/v1/judgements/<string:context>", methods=["get"])
+    @util.json_encapsulated_errors
     def get_context_judgements(context):
         """Gets all judgements within a context"""
         judgements_doc = state.judgements.get(context)
         return flask.json.jsonify(judgements_doc)
 
     @bp.route("/v1/judgements/<string:context>/<string:type>", methods=["get"])
+    @util.json_encapsulated_errors
     def get_entity_type_judgements(context, type_):
         """Gets all judgements for a specific entity type"""
         judgements_doc = state.judgements.get(context, type_)
         return flask.json.jsonify(judgements_doc)
 
     @bp.route("/v1/judgements/<string:context>/<string:type>/<int:id>", methods=["get"])  # noqa
+    @util.json_encapsulated_errors
     def get_entity_judgements(context, type_, id_):
         """Gets all judgements for a specific entity"""
         judgements_doc = state.judgements.get(
@@ -28,6 +31,7 @@ def configure(bp, config, trusted_clients, centralauth, state, stream):
         return flask.json.jsonify(judgements_doc)
 
     @bp.route("/v1/judgements/<string:context>/<string:type>/<int:id>/<string:schema>", methods=["get"])  # noqa
+    @util.json_encapsulated_errors
     def get_entity_schema_judgements(context, type_, id_, schema):
         """Gets all judgements for a specific entity schema"""
         judgements_doc = state.judgements.get(
@@ -35,6 +39,7 @@ def configure(bp, config, trusted_clients, centralauth, state, stream):
         return flask.json.jsonify(judgements_doc)
 
     @bp.route("/v1/judgements/<int:judgement_id>/preference", methods=["put"])
+    @util.json_encapsulated_errors
     @util.authorized_user_action(
         config, trusted_clients, centralauth, "set_judgement_preference")
     def set_judgement_preference(judgement_id, gu_id, request_values):
@@ -43,7 +48,7 @@ def configure(bp, config, trusted_clients, centralauth, state, stream):
         """
         preference = json.loads(request_values['preference'])
         if preference not in (True, False):
-            return responses.malformed_request(
+            raise errors.ParameterError(
                 "'preference' must be either 'true' or 'false'")
 
         # Construct a new proto-event for the judgement
@@ -54,6 +59,7 @@ def configure(bp, config, trusted_clients, centralauth, state, stream):
         return util.execute_and_log_or_error(state, proto_event)
 
     @bp.route("/v1/judgements/", methods=["post"])
+    @util.json_encapsulated_errors
     @util.authorized_user_action(
         config, trusted_clients, centralauth, "new_judgement")
     def new_judgement(gu_id, request_values):
