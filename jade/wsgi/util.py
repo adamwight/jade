@@ -46,12 +46,3 @@ def execute_and_log_or_error(state, proto_event):
         raise errors.EventExecutionError(e, proto_event)
 
     return flask.json.jsonify(event)
-
-
-def json_encapsulated_errors(route):
-    @wraps(route)
-    def _json_error_capsule(*args, **kwargs):
-        try:
-            return route(*args, **kwargs)
-        except Exception as e:
-            return responses.error(e)

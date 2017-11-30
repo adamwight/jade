@@ -22,23 +22,23 @@ class UnknownError(RequestError):
     TYPE = "unknown"
 
     def __init__(self, e):
+        super().__init__()
         self.e = e
 
     def format_detail(self):
         doc = {'exception': str(self.e)}
         if __debug__:
-            ex_type, ex, tb = sys.exc_info()
-            return {'traceback': list(traceback.extract_tb(tb))}
-
+            doc['traceback'] = get_tb()
         return doc
 
 
 ###############################################################################
 class EventExecutionError(RequestError):
     "The execution of a proto-event failed."
-    TYPE = "event_execution_error"
+    TYPE = "event_execution"
 
     def __init__(self, proto_event, e):
+        super().__init__()
         self.proto_event = proto_event
         self.e = e
 
@@ -46,9 +46,7 @@ class EventExecutionError(RequestError):
         doc = {'proto_event': self.proto_event,
                'exception': str(self.e)}
         if __debug__:
-            ex_type, ex, tb = sys.exc_info()
-            doc['traceback'] = list(traceback.extract_tb(tb))
-
+            doc['traceback'] = get_tb()
         return doc
 
 
@@ -61,10 +59,10 @@ class MalformedRequestError(RequestError):
 
 class ParameterError(MalformedRequestError):
     "There was something wrong with a parameter in the user's request."
-    SUBTYPE = "parameter_error"
+    SUBTYPE = "parameter"
 
     def __init__(self, parameter, expected, instead):
-        self.parameter = parameter
+        super().__init__()
         self.expected = expected
         self.instead = instead
 
@@ -76,9 +74,10 @@ class ParameterError(MalformedRequestError):
 
 class MissingParameterError(MalformedRequestError):
     "A parameter was missing from a user's request."
-    SUBTYPE = "missing_parameter_error"
+    SUBTYPE = "missing_parameter"
 
     def __init__(self, parameter):
+        super().__init__()
         self.parameter = parameter
 
     def format_detail(self):
@@ -88,16 +87,17 @@ class MissingParameterError(MalformedRequestError):
 ###############################################################################
 class UserPermissionError(RequestError):
     "An error occurred while checking user permission."
-    TYPE = "user_permission_error"
+    TYPE = "user_permission"
     HTTP_CODE = 403
 
 
 class UserBlockedError(UserPermissionError):
     "This action cannot be performed because the user is blocked."
-    SUBTYPE = "user_blocked_error"
+    SUBTYPE = "user_blocked"
     HTTP_CODE = 403
 
     def __init__(self, gu_id, context, expiry, reason):
+        super().__init__()
         self.gu_id = gu_id
         self.context = context
         self.expiry = expiry
@@ -112,9 +112,10 @@ class UserBlockedError(UserPermissionError):
 
 class UserRightsError(UserPermissionError):
     "This action cannot be performed because the user lacks necessary rights."
-    SUBTYPE = "user_rights_error"
+    SUBTYPE = "user_rights"
 
     def __init__(self, gu_id, context, required, user_groups):
+        super().__init__()
         self.gu_id = gu_id
         self.context = context
         self.required = required
@@ -129,16 +130,33 @@ class UserRightsError(UserPermissionError):
 
 class AuthenticationError(UserPermissionError):
     "This action cannot be performed because the user is not authenticated."
-    SUBTYPE = "authentication_error"
+    SUBTYPE = "authentication"
     HTTP_CODE = 401
 
 
 class UserExistenceError(UserPermissionError):
     "This action cannot be performed because the user doesn't exist."
-    SUBTYPE = "user_existence_error"
+    SUBTYPE = "user_existence"
 
 
 class TrustedClientVerificationError(UserPermissionError):
     "This action cannot be performed because the client cannot be validated."
-    SUBTYPE = "trusted_client_verification_error"
+    SUBTYPE = "trusted_client_verification"
     HTTP_CODE = 401
+
+    def __init__(self, auth_key, exception):
+        super().__init__()
+        self.auth_key = auth_key
+        self.exception = exception
+
+    def format_details(self):
+        doc = {'auth_key': self.auth_key,
+               'exception': str(self.exception)}
+        if __debug__:
+            doc['traceback'] = get_tb()
+        return doc
+
+
+def get_tb():
+    ex_type, ex, tb = sys.exc_info()
+    return list(traceback.extract_tb(tb))

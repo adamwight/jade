@@ -4,7 +4,16 @@ from werkzeug.datastructures import MultiDict
 from . import errors
 
 HASH_ALGORITHM = "HS256"
-
+JWT_ERRORS = (jwt.exceptions.InvalidTokenError,
+              jwt.exceptions.DecodeError,
+              jwt.exceptions.ExpiredSignatureError,
+              jwt.exceptions.InvalidAudienceError,
+              jwt.exceptions.InvalidIssuerError,
+              jwt.exceptions.InvalidIssuedAtError,
+              jwt.exceptions.ImmatureSignatureError,
+              jwt.exceptions.InvalidKeyError,
+              jwt.exceptions.InvalidAlgorithmError,
+              jwt.exceptions.MissingRequiredClaimError)
 
 class TrustedClients:
 
@@ -19,16 +28,7 @@ class TrustedClients:
             return json2multidict(jwt.decode(
                 encoded_values, self.key_secrets[auth_key],
                 algorithms=[HASH_ALGORITHM]))
-        except (jwt.exceptions.InvalidTokenError,
-                jwt.exceptions.DecodeError,
-                jwt.exceptions.ExpiredSignatureError,
-                jwt.exceptions.InvalidAudienceError,
-                jwt.exceptions.InvalidIssuerError,
-                jwt.exceptions.InvalidIssuedAtError,
-                jwt.exceptions.ImmatureSignatureError,
-                jwt.exceptions.InvalidKeyError,
-                jwt.exceptions.InvalidAlgorithmError,
-                jwt.exceptions.MissingRequiredClaimError) as e:
+        except JWT_ERRORS as e:
             raise errors.TrustedClientVerificationError(auth_key, e)
 
     @classmethod

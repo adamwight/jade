@@ -1,3 +1,13 @@
+jade:
+  wsgi:
+    application_root: ""
+    url_prefix: ""
+    error_host: 'https://www.wikimedia.org'
+    error_alt: 'Wikimedia'
+  home:
+    footer: >
+      Hosted on localhost &amp; written in
+      <a href="https://python.org">Python 3</a>
 
 centralauth:
   host: https://mediawiki.org
