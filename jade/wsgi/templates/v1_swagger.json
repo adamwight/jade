@@ -17,37 +17,70 @@
   "definitions": {
     "JudgementsResponse": {
       "type": "object",
-      "properties": {
+      "additionalProperties": {
+        "$ref": "#/definitions/Context"
       }
     },
     "Context": {
       "type": "object",
-      "properties": {
+      "additionalProperties": {
+        "$ref": "#/definitions/EntityType"
       }
     },
-    "Entity": {
-      "type": {
-        "type": "string",
-        "description": "The type of entity"
-      },
-      "id": {
-        "type": "number",
-        "description": "The identify for a specific entity"
+    "EntityType": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/EntityId"
+      }
+    },
+    "EntityId": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Schema"
       }
     },
     "Schema": {
-      "type": "object",
-      "properties": {
+      "type": "array",
+      "items": {
+        "type": {"$ref": "#definitions/Judgement"}
       }
     },
     "Judgement": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "int",
+          "description": "The identifier for the endorsement"
+        },
+        "data": {
+          "type": ["number", "string", "bool", "object", "array"],
+          "description": "The payload data representing the judgement."
+        },
+        "prefernece": {
+          "type": "boolean",
+          "description": "Is this the prefered judgement?"
+        }
       }
     },
     "Endorsement": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "number",
+          "description": "The identifier for the endorsement"
+        },
+        "gu_id": {
+          "type": "number",
+          "description": "The global user identifier for the endorsing user."
+        },
+        "comment": {
+          "type": "string",
+          "description": "A short summary/explanation left by the user saving the endorsement."
+        },
+        "touched": {
+          "type": "string",
+          "description": "An ISO <something> UTC timestamp."
+        }
       }
     },
     "Error": {
