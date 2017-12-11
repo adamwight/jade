@@ -13,7 +13,8 @@ centralauth:
   host: https://mediawiki.org
 
 actions:
-  rights:
-    new_judgement: []
-    set_judgement_preference:
+  new_judgement:
+    groups: []
+  set_judgement_preference:
+    groups: []
       - autoconfirmed
