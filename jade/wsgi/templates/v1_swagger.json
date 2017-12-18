@@ -1,0 +1,136 @@
+{
+
+  "info": {
+    "version": "1",
+    "title": "JADE",
+    "description": "Manages judgements and dialog of wiki things"
+  },
+  "basePath": "/",
+  "swagger": "2.0",
+  "schemes": [
+    "{{scheme|safe}}"
+  ],
+  "host": "{{host|safe}}",
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "JudgementsResponse": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Context"
+      }
+    },
+    "Context": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/EntityType"
+      }
+    },
+    "EntityType": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/EntityId"
+      }
+    },
+    "EntityId": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Schema"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "type": {"$ref": "#definitions/Judgement"}
+      }
+    },
+    "Judgement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "int",
+          "description": "The identifier for the endorsement"
+        },
+        "data": {
+          "type": ["number", "string", "bool", "object", "array"],
+          "description": "The payload data representing the judgement."
+        },
+        "prefernece": {
+          "type": "boolean",
+          "description": "Is this the prefered judgement?"
+        }
+      }
+    },
+    "Endorsement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The identifier for the endorsement"
+        },
+        "gu_id": {
+          "type": "number",
+          "description": "The global user identifier for the endorsing user."
+        },
+        "comment": {
+          "type": "string",
+          "description": "A short summary/explanation left by the user saving the endorsement."
+        },
+        "touched": {
+          "type": "string",
+          "description": "An ISO <something> UTC timestamp."
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A short string identifying the general type of error."
+        },
+        "subtype": {
+          "type": "string",
+          "description": "A short string identifying the specific type of error."
+        },
+        "details": {
+          "type": "object",
+          "description": "Detailed information about the error."
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/judgements/": {
+      "get": {
+        "summary": "Get all of the judgements.",
+        "description": "Returns all of the available judgements ",
+        "parameters": [
+          {
+            "required": false,
+            "name": "download_all",
+            "in": "path",
+            "description": "If provided, all judgements will be returned as a large dump",
+            "type": "boolean",
+            "format": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON containing a set of judgements",
+            "schema": {
+              "$ref": "#/definitions/JudgementsResponse"
+            }
+          },
+          "default": {
+            "description": "An error occurred that prevented any scores from being generated",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+# Use lists
+{
+  "enwiki": [
+    {
+      "type": "diff", "id": 1,
+      "judgements": {
+        "damaging": [
+          {
+            "id": 1234563,
+            "data": true, "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Repeated characters", "touched": "2017-11-29T23:23:23"}
+            ]
+          },
+          {
+            "id": 1234564,
+            "data": false, "preference": false,
+            "endorsements": [
+              {"gu_id": 234567,"comment": "LOL it's fine", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ],
+        "goodfaith": [
+          {
+            "id": 1234565,
+            "data": false, "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Repeated characters", "touched": "2017-11-29T23:23:23"}
+            ]
+          },
+          {
+            "id": 1234566,
+            "data": true, "preference": false,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "LOL it's fine", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ]
+      }
+    }
+    {
+      "type": "revision", "id": 1,
+      "judgements": {
+        "wp10": [
+          {
+            "id": 1234567,
+            "data": "Stub", "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Lacks references and needs wikification", "touched": "2017-11-29T21:10:01"}
+            ]
+          },
+          {
+            "id": 1234568,
+            "data": "FA", "preference": false,
+            "endorsements": [
+              {"gu_id": 234567,"comment": "It's literally the best thing ever", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
+# Directory  structure
+{
+  "enwiki": {
+    "diff": {
+      "1": {
+        "damaging": [
+          {
+            "id": 1234563,
+            "data": true, "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Repeated characters", "touched": "2017-11-29T23:23:23"}
+            ]
+          },
+          {
+            "id": 1234564,
+            "data": false, "preference": false,
+            "endorsements": [
+              {"gu_id": 234569,"comment": "LOL it's fine", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ],
+        "goodfaith": [
+          {
+            "id": 1234565,
+            "data": false, "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Repeated characters", "touched": "2017-11-29T23:23:23"}
+            ]
+          },
+          {
+            "id": 1234566,
+            "data": true, "preference": false,
+            "endorsements": [
+              {"gu_id": 234569, "comment": "LOL it's fine", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ]
+      }
+    },
+    "revision": {
+      "1": {
+        "wp10": [
+          {
+            "id": 1234567,
+            "data": "Stub", "preference": true,
+            "endorsements": [
+              {"gu_id": 234567, "comment": "Lacks references and needs wikification", "touched": "2017-11-29T21:10:01"}
+            ]
+          },
+          {
+            "id": 1234568,
+            "data": "FA", "preference": false,
+            "endorsements": [
+              {"gu_id": 234569,"comment": "It's literally the best thing ever", "touched": "2017-11-29T23:23:43"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
