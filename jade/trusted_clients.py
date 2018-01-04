@@ -15,6 +15,7 @@ JWT_ERRORS = (jwt.exceptions.InvalidTokenError,
               jwt.exceptions.InvalidAlgorithmError,
               jwt.exceptions.MissingRequiredClaimError)
 
+
 class TrustedClients:
 
     def __init__(self, key_secrets):

@@ -6,8 +6,7 @@ User in good standing: https://www.mediawiki.org/w/api.php?action=query&meta=glo
 
 TODO: Make a request to check on rights for every action
 TODO: Make a request to local wiki (in context) for local user rights
-'''  # noqa
-import flask
+'''  # noqa: E501
 import mwapi
 
 from . import errors
