@@ -12,9 +12,8 @@ Options:
     --help      Show this usage message.
 """
 import docopt_subcommands as dsc
-import sys
 
-from .applications import wsgi
+from .applications import wsgi  # noqa: F401
 
 
 def main():

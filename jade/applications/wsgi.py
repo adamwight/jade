@@ -9,9 +9,9 @@ def server_command(args):
     """
     usage:
         {program} server (-h | --help)
-        {program} server [--host=<name>] [--port=<num>] [--config-dir=<path>]...
-                         [--processes=<num>] [--debug] [--verbose]
-                         [--logging-config=<path>]
+        {program} server [--host=<name>] [--port=<num>]
+                         [--config-dir=<path>]...  [--processes=<num>]
+                         [--debug] [--verbose] [--logging-config=<path>]
 
     Runs a WSGI-based web server that hosts JADE.
 
@@ -20,8 +20,8 @@ def server_command(args):
         --host=<name>            The hostname to listen on [default: 0.0.0.0]
         --port=<num>             The port number to start the server on
                                  [default: 8080]
-        --config-dir=<path>      The path to a directory containing configuration
-                                 [default: config/]
+        --config-dir=<path>      The path to a directory containing
+                                 configuration [default: config/]
         --logging-config=<path>  The path to a logging configuration file
         --processes=<num>        The number of parallel processes to handle
                                  [default: 16]

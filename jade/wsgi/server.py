@@ -6,7 +6,7 @@ from . import responses
 from .. import errors
 from jade.centralauth import CentralAuth
 # TODO:
-#from jade.state_stores import StateStore
+# from jade.state_stores import StateStore
 from jade.trusted_clients import TrustedClients
 
 
