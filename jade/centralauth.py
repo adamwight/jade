@@ -63,3 +63,7 @@ class CentralAuth:
             if not set(local_groups) & set(requirements):
                 raise errors.UserRightsError(
                     gu_id, context, requirements, local_groups)
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(config['centralauth'])

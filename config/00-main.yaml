@@ -9,6 +9,9 @@ jade:
       Hosted on localhost &amp; written in
       <a href="https://python.org">Python 3</a>
 
+authorized_clients:
+    key_secrets: {}
+
 centralauth:
   host: https://mediawiki.org
 

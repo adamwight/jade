@@ -4,9 +4,10 @@ import flask_swaggerui
 
 from . import responses
 from .. import errors
-from .central_auth import CentralAuth
-from .state_stores import StateStore
-from .trusted_clients import TrustedClients
+from jade.centralauth import CentralAuth
+# TODO:
+#from jade.state_stores import StateStore
+from jade.trusted_clients import TrustedClients
 
 
 def configure(config):
@@ -30,7 +31,8 @@ def configure(config):
 
     trusted_clients = TrustedClients.from_config(config)
     centralauth = CentralAuth.from_config(config)
-    state_store = StateStore.from_config(config)
+    # state_store = StateStore.from_config(config)
+    state_store = None
 
     bp = routes.configure(
         config, bp, trusted_clients, centralauth, state_store)
@@ -38,7 +40,7 @@ def configure(config):
 
     # Configure swagger-ui routes
     swagger_bp = flask_swaggerui.build_static_blueprint(
-        'ores-swaggerui', __name__,
+        'jade-swaggerui', __name__,
         url_prefix=config['jade']['wsgi']['url_prefix'])
     app.register_blueprint(swagger_bp)
 
