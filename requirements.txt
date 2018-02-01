@@ -1,0 +1,9 @@
+# Note that cryptography < 1.9 is incompatible with openssl-1.1.0f
+cryptography >= 1.9.0, < 1.9.999
+docopt
+docopt_subcommands
+flask_swaggerui
+Flask >= 0.12.2, < 0.12.999
+jwt
+mwapi
+yamlconf
