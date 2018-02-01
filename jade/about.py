@@ -1,0 +1,7 @@
+__name__ = "jade"
+__version__ = "0.0.1"
+__author__ = "Aaron Halfaker"
+__author_email__ = "ahalfaker@wikimedia.org"
+__description__ = "Judgment and Dialog Engine"
+__url__ = "https://github.com/wiki-ai/jade"
+__license__ = "MIT"
