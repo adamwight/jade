@@ -91,6 +91,34 @@ class UserPermissionError(RequestError):
     HTTP_CODE = 403
 
 
+class GlobalUserExistenceError(UserPermissionError):
+    "This user is globally missing."
+    SUBTYPE = "user_missing_global"
+    HTTP_CODE = 403
+
+    def __init__(self, gu_id):
+        super().__init__()
+        self.gu_id = gu_id
+
+    def format_detail(self):
+        return {'gu_id': self.gu_id}
+
+
+class LocalUserExistenceError(UserPermissionError):
+    "This user is locally missing."
+    SUBTYPE = "user_missing_local"
+    HTTP_CODE = 403
+
+    def __init__(self, name, context):
+        super().__init__()
+        self.name = name
+        self.context = context
+
+    def format_detail(self):
+        return {'name': self.name,
+                'context': self.context}
+
+
 class UserBlockedError(UserPermissionError):
     "This action cannot be performed because the user is blocked."
     SUBTYPE = "user_blocked"
@@ -108,6 +136,19 @@ class UserBlockedError(UserPermissionError):
                 'context': self.context,
                 'expiry': self.expiry,
                 'reason': self.reason}
+
+
+class UserLockedError(UserPermissionError):
+    "This action cannot be performed because the user is blocked."
+    SUBTYPE = "user_locked"
+    HTTP_CODE = 403
+
+    def __init__(self, gu_id):
+        super().__init__()
+        self.gu_id = gu_id
+
+    def format_detail(self):
+        return {'gu_id': self.gu_id}
 
 
 class UserRightsError(UserPermissionError):

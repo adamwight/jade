@@ -9,10 +9,13 @@ TODO: Make a request to local wiki (in context) for local user rights
 '''  # noqa: E501
 import mwapi
 
+from . import about
 from . import errors
 
+USER_AGENT = "{} -- {}".format(about.__name__, about.__author_email__)
 
-class CentralAuth:
+
+class CentralAuth(object):
 
     def __init__(self, ca_session):
         self.ca_session = ca_session
@@ -31,8 +34,7 @@ class CentralAuth:
         return gui_doc
 
     def get_localuser_info(self, name, context_doc):
-        session = mwapi.Session(
-            context_doc['url'], self.ca_session.user_agent)
+        session = mwapi.Session(context_doc['url'], user_agent = USER_AGENT)
         doc = session.get(
             action='query', list='users', ususers={name}, usprop={'groups'})
         lui_doc = doc['query']['users'][0]
@@ -45,8 +47,7 @@ class CentralAuth:
         gui_doc = self.get_globaluser_info(gu_id)
 
         if 'locked' in gui_doc:
-            raise errors.UserLockedError(
-                "The user account with gu_id={0} is locked".format(gu_id))
+            raise errors.UserLockedError(gu_id)
 
         # Check for local context
         if context in gui_doc['merged']:
@@ -54,8 +55,10 @@ class CentralAuth:
 
             if 'blocked' in context_doc:
                 raise errors.UserBlockedError(
-                    "the user account with gu_id={0} is blocked on {1}: {2}"
-                    .format(gu_id, context, context_doc['blocked']))
+                    gu_id,
+                    context,
+                    context_doc['blocked']['expiry'],
+                    context_doc['blocked']['reason'])
 
             lui_doc = self.get_localuser_info(gui_doc['name'], context_doc)
             local_groups = lui_doc.get('groups', []) or []
@@ -66,4 +69,15 @@ class CentralAuth:
 
     @classmethod
     def from_config(cls, config):
-        return cls(config['centralauth'])
+        # Extract config.
+        session_config = config['centralauth'].copy()
+        if 'user_agent' not in session_config:
+            session_config['user_agent'] = USER_AGENT
+        # Pull host out as it's not a keyword arg.
+        host = session_config['host']
+        del(session_config['host'])
+
+        # Create session based on config.
+        ca_session = mwapi.Session(host, **session_config)
+
+        return cls(ca_session)
