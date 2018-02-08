@@ -15,7 +15,7 @@ from . import errors
 USER_AGENT = "{} -- {}".format(about.__name__, about.__author_email__)
 
 
-class CentralAuth(object):
+class CentralAuth:
 
     def __init__(self, ca_session):
         self.ca_session = ca_session

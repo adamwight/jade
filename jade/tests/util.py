@@ -1,6 +1,6 @@
 import contextlib
 import copy
-import mock
+from unittest import mock
 
 
 @contextlib.contextmanager
