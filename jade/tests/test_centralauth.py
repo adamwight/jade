@@ -22,6 +22,16 @@ missing_gui_response = {
     }
 }
 
+missing_lui_response = {
+    "batchcomplete": "",
+    "query": {
+        "users": [{
+            "name": "Example",
+            "missing": ""
+        }]
+    }
+}
+
 enwiki_blocked_gui_response = {
     'batchcomplete': '',
     'query': {
@@ -247,3 +257,14 @@ def test_check_user_rights_lacks_autopatrolled():
         assert exc_info.value.context == 'metawiki'
         assert exc_info.value.required == ['autopatrolled']
         assert exc_info.value.user_groups == ['*', 'user', 'autoconfirmed']
+
+
+def test_check_user_rights_local_missing():
+    ca = CentralAuth.from_config(test_config)
+    with util.mock_mwapi_get([autopatrolled_metawiki_gui_response,
+                              missing_lui_response]):
+        with pytest.raises(errors.LocalUserExistenceError) as exc_info:
+            ca.check_user_rights(15622560, 'metawiki', ['autopatrolled'])
+
+        assert exc_info.value.name == 'Awight (WMF)'
+        assert exc_info.value.context == 'metawiki'
