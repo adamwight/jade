@@ -34,7 +34,7 @@ class CentralAuth:
         return gui_doc
 
     def get_localuser_info(self, name, context_doc):
-        session = mwapi.Session(context_doc['url'], user_agent = USER_AGENT)
+        session = mwapi.Session(context_doc['url'], user_agent=USER_AGENT)
         doc = session.get(
             action='query', list='users', ususers={name}, usprop={'groups'})
         lui_doc = doc['query']['users'][0]

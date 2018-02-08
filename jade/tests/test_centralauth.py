@@ -1,4 +1,3 @@
-import mwapi
 import pytest
 
 from jade.centralauth import CentralAuth
@@ -185,17 +184,15 @@ def test_from_config():
 
 def test_get_globaluser_info_missing_user():
     ca = CentralAuth.from_config(test_config)
-
     with util.mock_mwapi_get(missing_gui_response):
         with pytest.raises(errors.GlobalUserExistenceError) as exc_info:
-            gui_doc = ca.get_globaluser_info(12345)
+            ca.get_globaluser_info(12345)
 
         assert exc_info.value.gu_id == 12345
 
 
 def test_get_globaluser_info():
     ca = CentralAuth.from_config(test_config)
-
     with util.mock_mwapi_get(enwiki_blocked_gui_response):
         gui_doc = ca.get_globaluser_info(19729909)
 
@@ -225,11 +222,6 @@ def test_check_user_rights_blocked_other_context():
 
 def test_check_user_rights_locked():
     ca = CentralAuth.from_config(test_config)
-    #with mock.patch('mwapi.session.get') as mock_mwapi:
-    #    mock_mwapi.side_effect = [
-    #        enwiki_blocked_gui_response,
-    #        enwiki_blocked_lui_response,
-    #    ]
     with util.mock_mwapi_get(locked_gui_response):
         with pytest.raises(errors.UserLockedError) as exc_info:
             ca.check_user_rights(33085348, 'enwiki', ['autopatrolled'])
