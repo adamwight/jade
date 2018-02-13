@@ -1,0 +1,50 @@
+{
+    "comment": "summary says",
+    "database": "wiki",
+    "meta": {
+        "domain": "dev.wiki.local.wmftest.net",
+        "dt": "2018-02-13T18:33:56+00:00",
+        "id": "7314607c-10ec-11e8-b2de-0800278dc04d",
+        "request_id": "abafe69b-d6bc-4aca-ad37-04b25823fe73",
+        "schema_uri": "mediawiki/revision/visibility-change/1",
+        "topic": "mediawiki.revision-visibility-change",
+        "uri": "http://dev.wiki.local.wmftest.net:8080/wiki/Jade:Revision/2"
+    },
+    "page_id": 3,
+    "page_is_redirect": false,
+    "page_namespace": 810,
+    "page_title": "Jade:Revision/2",
+    "parsedcomment": "summary says",
+    "performer": {
+        "user_edit_count": 3,
+        "user_groups": [
+            "bureaucrat",
+            "sysop",
+            "*",
+            "user"
+        ],
+        "user_id": 1,
+        "user_is_bot": false,
+        "user_registration_dt": "2018-02-13T18:33:53Z",
+        "user_text": "UTSysop"
+    },
+    "prior_state": {
+        "visibility": {
+            "comment": false,
+            "text": false,
+            "user": false
+        }
+    },
+    "rev_content_format": "JadeJudgment",
+    "rev_content_model": "JadeJudgment",
+    "rev_id": 3,
+    "rev_len": 372,
+    "rev_minor_edit": false,
+    "rev_sha1": "9xqt1kwuqpcenvlm0dm2iuiqojhl8yf",
+    "rev_timestamp": "2018-02-13T18:33:56Z",
+    "visibility": {
+        "comment": true,
+        "text": true,
+        "user": true
+    }
+}

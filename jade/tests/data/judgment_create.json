@@ -1,0 +1,38 @@
+{
+    "comment": "summary says",
+    "database": "wiki",
+    "meta": {
+        "domain": "dev.wiki.local.wmftest.net",
+        "dt": "2018-02-13T18:33:56+00:00",
+        "id": "72e253fc-10ec-11e8-b2de-0800278dc04d",
+        "request_id": "0ca07075-6855-4e8a-af4d-dee01bf5ae9c",
+        "schema_uri": "mediawiki/revision/create/2",
+        "topic": "mediawiki.revision-create",
+        "uri": "http://dev.wiki.local.wmftest.net:8080/wiki/Jade:Revision/2"
+    },
+    "page_id": 3,
+    "page_is_redirect": false,
+    "page_namespace": 810,
+    "page_title": "Jade:Revision/2",
+    "parsedcomment": "summary says",
+    "performer": {
+        "user_edit_count": 5,
+        "user_groups": [
+            "*",
+            "user"
+        ],
+        "user_id": 2,
+        "user_is_bot": false,
+        "user_registration_dt": "2018-02-13T18:33:54Z",
+        "user_text": "TestUser 7f7ec1.002"
+    },
+    "rev_content_changed": true,
+    "rev_content_format": "JadeJudgment",
+    "rev_content_model": "JadeJudgment",
+    "rev_id": 3,
+    "rev_len": 372,
+    "rev_minor_edit": false,
+    "rev_parent_id": 0,
+    "rev_sha1": "9xqt1kwuqpcenvlm0dm2iuiqojhl8yf",
+    "rev_timestamp": "2018-02-13T18:33:56Z"
+}
